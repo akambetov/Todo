@@ -176,7 +176,7 @@ export default {
       return new Promise((res) => setTimeout(res, ms));
     }
 
-    const fakeAsync = delay(500);
+    const fakeAsync = delay(3000);
     fakeAsync.then(() => {
       this.todos = [
         {name: 'Products', description: 'Buy milk', completed: false, matched: false},
