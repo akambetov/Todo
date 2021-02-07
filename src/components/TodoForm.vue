@@ -39,7 +39,7 @@
           />
         </div>
         <div class="table__col">
-          <button class="button no-margin" type="submit">Фильтр A-z</button>
+          <button class="button no-margin" type="submit" @click="filter">Фильтр A-z</button>
         </div>
       </div>
 
@@ -93,9 +93,11 @@ export default {
       name: '',
       description: '',
       todos: [],
+      srcTodos: [],
       toDelete: [],
       isLoading: true,
       substring: '',
+      sorted: false,
     };
   },
   methods: {
@@ -110,6 +112,7 @@ export default {
         return;
       }
       this.todos.push(todo);
+      this.srcTodos = this.todos.slice();
       this.name = '';
       this.description = '';
     },
@@ -157,6 +160,16 @@ export default {
         });
       }
     },
+    filter() {
+      const sortedTodos = this.todos.slice().sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        if (a.name === b.name) return 0;
+      });
+
+      this.sorted ? (this.todos = sortedTodos) : (this.todos = this.srcTodos);
+      this.sorted = !this.sorted;
+    },
   },
   mounted() {
     function delay(ms) {
@@ -171,6 +184,8 @@ export default {
         {name: 'Frontend', description: 'SCSS', completed: false, matched: false},
         {name: 'Frontend', description: 'Test', completed: false, matched: false},
       ];
+
+      this.srcTodos = this.todos.slice();
       this.isLoading = false;
     });
   },
