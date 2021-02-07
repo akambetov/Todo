@@ -36,7 +36,6 @@
             placeholder="Поиск задач"
             v-model.trim="substring"
             @input="search"
-            @keyup.delete="search"
           />
         </div>
         <div class="table__col">
@@ -120,23 +119,26 @@ export default {
     },
     completed(idx) {
       this.todos[idx].completed = !this.todos[idx].completed;
-      console.log(idx);
     },
     search() {
       console.log(this.substring);
       if (this.substring) {
+        // если в поисковой строке есть что-то
         this.todos.forEach((todo) => {
-          if (todo.name.toLowerCase().includes(this.substring.toLowerCase())) {
+          if (
+            todo.name.toLowerCase().includes(this.substring.toLowerCase()) ||
+            todo.description.toLowerCase().includes(this.substring.toLowerCase())
+          ) {
+            // если поисковая строка совпадает с данными из таблицы
             todo.matched = true;
             setTimeout(() => {
               this.$refs.tableRow.forEach((row) => {
-                if (!row.dataset.matched) {
-                  row.style.display = 'none';
-                  // console.log(row);
-                }
+                if (row.dataset.matched) row.style.display = '';
+                else row.style.display = 'none';
               });
             }, 0);
           } else {
+            // если поисковая строка НЕ совпадает с данными из таблицы
             todo.matched = false;
             setTimeout(() => {
               this.$refs.tableRow.forEach((row) => {
@@ -146,12 +148,11 @@ export default {
           }
         });
       } else {
+        // если в поисковой строке НИЧЕГО НЕТ
         this.todos.forEach((todo) => {
           todo.matched = false;
           setTimeout(() => {
-            this.$refs.tableRow.forEach((row) => {
-              row.style.display = '';
-            });
+            this.$refs.tableRow.forEach((row) => (row.style.display = ''));
           }, 0);
         });
       }
@@ -165,7 +166,7 @@ export default {
     const fakeAsync = delay(500);
     fakeAsync.then(() => {
       this.todos = [
-        {name: 'Products', description: 'Bue milk', completed: false, matched: false},
+        {name: 'Products', description: 'Buy milk', completed: false, matched: false},
         {name: 'Frontend', description: 'Vue.js', completed: false, matched: false},
         {name: 'Frontend', description: 'SCSS', completed: false, matched: false},
         {name: 'Frontend', description: 'Test', completed: false, matched: false},
